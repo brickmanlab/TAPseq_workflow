@@ -26,7 +26,7 @@ rule alignment_references:
 
 # run workflow until read alignment. this allows to determine the number of cells before extracting
 # dge data and finishing the workflow
-rule align:
+rule align_reads:
   input:
     expand("results/alignment/{sample}_align_report.html", sample = config["samples"])
     

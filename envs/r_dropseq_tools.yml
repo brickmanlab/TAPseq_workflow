@@ -6,6 +6,7 @@ channels:
   - r
 dependencies:
   - python=3.6.6
+  - libgfortran
   - pandoc=1.19.2.1
   - readline=7.0
   - r-base=3.5.1

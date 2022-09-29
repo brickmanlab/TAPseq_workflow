@@ -12,13 +12,13 @@ cell_numbers:
   
 # alignment reference for each  sample
 align_ref:
-  sample1: data/alignment_references/hg38_tapseq_ref
-  sample2: data/alignment_references/hg38_genome_ref
+  sample1: data/alignment_references/mm10_tapseq_ref
+  sample2: data/alignment_references/mm10_tapseq_ref
   
 # 10x cell barcode whitelist file for each sample
 10x_cbc_whitelist:
-  sample1: "meta_data/10x_cell_barcode_whitelists/10x_bc_whitelist_737k_201608.txt"
-  sample2: "meta_data/10x_cell_barcode_whitelists/10x_bc_whitelist_737k_201608.txt"
+  sample1: "meta_data/10x_cell_barcode_whitelists/3M-february-2018.txt"
+  sample2: "meta_data/10x_cell_barcode_whitelists/3M-february-2018.txt"
 
 # number of minimum molecules per CROP-seq vector to define a cell perturbed for a given vector
 perturbation_status:
@@ -30,25 +30,24 @@ perturbation_status:
 
 # step 1: create alignment reference ---------------------------------------------------------------
 download_genome_annot:
-  hg38:
-    fasta_url: ftp://ftp.ensembl.org/pub/release-89/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
-    gtf_url: ftp://ftp.ensembl.org/pub/release-89/gtf/homo_sapiens/Homo_sapiens.GRCh38.89.gtf.gz
+  mm10:
+    fasta_url: http://ftp.ensembl.org/pub/release-98/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz
+    gtf_url: http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M23/gencode.vM23.primary_assembly.annotation.gtf.gz
 
 create_tapseq_ref:
   target_genes:
-    hg38_tapseq_ref: meta_data/target_gene_panels/target_genes_example.gtf
+    mm10_tapseq_ref: meta_data/target_gene_panels/target_genes.gtf
   BSgenome_id:
-    hg38: BSgenome.Hsapiens.UCSC.hg38
+    mm10: BSgenome.Mmusculus.UCSC.mm10
 
 create_vector_ref:
   vector_fasta:
-    hg38_tapseq_ref: meta_data/cropseq_vectors/cropseq_vectors_example.fasta
-    hg38_genome_ref: meta_data/cropseq_vectors/cropseq_vectors_example.fasta
+    mm10_tapseq_ref: meta_data/cropseq_vectors/cropseq_vectors.fasta
   vector_prefix:
     "CROPseq_dCas9_DS_"
   
 create_genomedir:
-  threads: 5
+  threads: 30
   sjdb_overhang: 57
   
 # step 2: align reads ------------------------------------------------------------------------------

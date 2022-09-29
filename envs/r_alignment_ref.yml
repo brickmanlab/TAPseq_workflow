@@ -14,4 +14,5 @@ dependencies:
   - bioconductor-genomicranges=1.34.0
   - bioconductor-genomicfeatures=1.34.1
   - bioconductor-bsgenome=1.50.0
-  - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.1
+  # - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.1
+  - bioconductor-bsgenome.mmusculus.ucsc.mm10

@@ -5,7 +5,8 @@ workflow that handles all data processing from fastq files to transcript counts 
 status matrices from TAP-seq experiments.
 
 The workflow can be downloaded by simply cloning the repository into a location of choice:
-```
+
+```bash
 git clone https://github.com/argschwind/TAPseq_workflow.git
 ```
 
@@ -15,6 +16,7 @@ snakemake are installed. All other required dependencies will be installed throu
 The data processing workflow consists of following steps:
 
 ## 1. Create TAP-seq alignment references
+
 TAP-seq uses custom alignment references with added CROP-seq vector transcripts to the identify
 perturbation of each cell. The rules in workflow `rules/create_alignment_refs.smk` allow creation of
 such aligment references. The workflow supports references containing either the whole transcriptome
@@ -42,7 +44,7 @@ All alignment references used by the workflow can be created using the following
 `--sjdbOverhang` STAR parameter might have to be adjusted in the `create_genomedir` section in the
 config file.
 
-```
+```bash
 # create all aligment references defined in the config file (--jobs = number of threads to use in
 # parallel, please adjust; -n = dryrun, remove it to execute)
 snakemake --use-conda --jobs 2 alignment_references -n
@@ -54,6 +56,7 @@ By default STAR uses up to 5 threads, but this can be adjusted in the `create_ge
 can be run entirely in parallel with each STAR process using 5 threads each.
 
 ## 2. Align reads
+
 Reads can be aligned to created references using the snakemake rules in `rules/align_reads.smk`.
 This is based on the [Drop-seq tools](http://mccarrolllab.org/dropseq/) workflow. Input paired end
 fastq files for every sample are specified under `samples` in the config file. This assumes that
@@ -69,12 +72,13 @@ file.
 Reads for all samples can be aligned by running following command.  This also creates an alignment
 report for every sample in `results/alignment`.
 
-```
+```bash
 # align reads for all samples
 snakemake --use-conda --jobs 2 align_reads -n
 ```
 
 ## 3. Extract digital gene expression (DGE)
+
 The last step of data processing consists of extracting transcript counts and the perturbation
 status for each cell in every sample. The main output of this step are `dge.txt` and
 `perturbation_status.txt` files for every sample containing the transcript counts and detected
@@ -84,14 +88,41 @@ CROP-seq vector perturbations per cell. This also applies chimeric read filterin
 DGE data can be extracted for all samples using following command, which also creates DGE reports in
 `results/dge`.
 
-```
+```bash
 snakemake --use-conda --jobs 2 extract_dge -n
 ```
 
-## Executing the whole workflow
+## 4. Executing the whole workflow
+
 The whole workflow can be exectuted for all samples at once using the snakemake "all" rule by simply
 running:
 
-```
+```bash
 snakemake --use-conda
+```
+
+## Running pipeline (example)
+
+```bash
+srun -N 1 --ntasks-per-node=30 --pty bash
+module load miniconda/latest
+source activate snakemake
+
+# merge lanes into one read
+cd data/fastq/
+cat AGTAAACC/*R1_001.fastq.gz > AGTAAACC_R1.fastq.gz
+cat AGTAAACC/*R2_001.fastq.gz > AGTAAACC_R2.fastq.gz
+cat TCATGAAA/*R1_001.fastq.gz > TCATGAAA_R1.fastq.gz
+cat TCATGAAA/*R2_001.fastq.gz > TCATGAAA_R2.fastq.gz
+
+# update config.yml
+
+# generate references
+snakemake --use-conda --jobs 2 alignment_references
+
+# align reads
+snakemake --use-conda --jobs 30 align_reads
+
+# DGE
+snakemake --use-conda --jobs 30 dge
 ```
