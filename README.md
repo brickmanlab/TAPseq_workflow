@@ -1,5 +1,7 @@
 # TAP-seq workflow
 
+To run the pipeline on DANGPU, see this [file instead](DANGPU.md).
+
 This repository contains a [snakemake](https://snakemake.readthedocs.io/en/stable/index.html)
 workflow that handles all data processing from fastq files to transcript counts and perturbation
 status matrices from TAP-seq experiments.
@@ -99,30 +101,4 @@ running:
 
 ```bash
 snakemake --use-conda
-```
-
-## Running pipeline (example)
-
-```bash
-srun -N 1 --ntasks-per-node=30 --pty bash
-module load miniconda/latest
-source activate snakemake
-
-# merge lanes into one read
-cd data/fastq/
-cat AGTAAACC/*R1_001.fastq.gz > AGTAAACC_R1.fastq.gz
-cat AGTAAACC/*R2_001.fastq.gz > AGTAAACC_R2.fastq.gz
-cat TCATGAAA/*R1_001.fastq.gz > TCATGAAA_R1.fastq.gz
-cat TCATGAAA/*R2_001.fastq.gz > TCATGAAA_R2.fastq.gz
-
-# update config.yml
-
-# generate references
-snakemake --use-conda --jobs 2 alignment_references
-
-# align reads
-snakemake --use-conda --jobs 30 align_reads
-
-# DGE
-snakemake --use-conda --jobs 30 dge
 ```

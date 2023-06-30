@@ -9,8 +9,8 @@ import glob
 # infer input fastq files from dirs in config file and sample wildcard
 def get_fastq_files(wildcards):
   indir = config["samples"][wildcards.sample]
-  f1 = glob.glob(indir + "/*" + wildcards.sample  + "_1_sequence.txt.gz")
-  f2 = glob.glob(indir + "/*" + wildcards.sample  + "_2_sequence.txt.gz")
+  f1 = glob.glob(indir + "/*" + wildcards.sample  + "*R1*.fastq.gz")
+  f2 = glob.glob(indir + "/*" + wildcards.sample  + "*R2*.fastq.gz")
   return {"fastq1" : f1, "fastq2" : f2}
 
 # workflow rules -----------------------------------------------------------------------------------
@@ -30,6 +30,7 @@ rule fastq_to_bam:
     "OUTPUT={output} "
     "SAMPLE_NAME={wildcards.sample} "
     "SORT_ORDER=queryname "
+    "TMP_DIR=/scratch/temp/ "
     "2> {log}"
 
 # tag genome reads with CELL barcodes
